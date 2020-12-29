@@ -5,7 +5,65 @@
 
 
 //lc1162
-
+class Solution {
+public:
+    vector<int> dir={-1,0,1,0,-1};
+    int maxDistance(vector<vector<int>>& grid) {
+        int R=grid.size();
+        if(R==0)
+            return 0;
+        int C=grid[0].size();
+        if(C==0)
+            return 0;
+        int zero=0;
+        queue<pair<int,int>> q;
+        for(int i=0;i<R;i++)
+        {
+            for(int j=0;j<C;j++)
+            {
+                if(grid[i][j]==1)
+                {
+                    q.push({i*C+j,0});
+                }
+                else 
+                    zero++;
+            }
+        }
+        
+        if(zero==0)
+            return -1;
+        
+        int mx=-1;
+        while(q.size()!=0)
+        {
+            int sz=q.size();
+            while(sz-- > 0)
+            {
+                pair<int,int> p=q.front();
+                q.pop();
+                
+                int r=p.first/C;
+                int c=p.first%C;
+                mx=max(mx,p.second);
+                
+                for(int d=0;d<4;d++)
+                {
+                    int x=r+dir[d];
+                    int y=c+dir[d+1];
+                    
+                    if(x>=0 && y>=0 && x<R && y<C && grid[x][y]==0)
+                    {
+                        grid[x][y]=1;
+                        q.push({x*C+y,p.second+1});
+                    } 
+                }
+            }
+        }
+        
+        
+        return mx;
+    }
+};
 
 
 
