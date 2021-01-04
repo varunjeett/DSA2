@@ -46,13 +46,43 @@ int findSA(vector<int>& nums,int k)
     }
     return ans;
 }
+//similarly solve maximum size subarray sum equal K
+int findMaxLength(vector<int>& nums) {
+        int len=nums.size();
+        unordered_map<int,int> map;
+        int ans=0;
+        int zero=0;
+        int one=0;
+        map[0]=-1;//(starting index-1)
+        
+        for(int j=0;j<nums.size();j++) {
+            int ele=nums[j];
+            if(ele==1)
+                one++;
+            else
+                zero++;
+            
+            int diff=zero-one;
+            if(map.find(diff)==map.end())//phle exist nhi krta
+            {
+                map[diff]=j;
+            }
+            else//exist krta hai
+            {
+                ans=max(ans,j-map[diff]);
+            }            
+        }
+        return ans;
+    }
 
 
 int main()
 {
     vector<int> arr={9, 4, 20, 3, 10, 5};
-    cout<<findSA(arr,33);
-
+    // cout<<findSA(arr,33);
+    
+    vector<int> nums={0,1,0,1,0,1,1,0,1,1,0};
+    cout<<findMaxLength(nums);
 
 }
 

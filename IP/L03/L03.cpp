@@ -129,3 +129,28 @@ long long int countSubarrWithEqualZeroAndOne(int arr[], int len)
     return ans;
 }
 
+class Solution {
+public:
+    int findMaxLength(vector<int>& nums) {
+        int len=nums.size();
+        unordered_map<int,int> map;
+        int ans=0;
+        int zero=0;
+        int one=0;
+        map[0]=-1;//(starting index-1)
+        
+        for(int j=0;j<nums.size();j++) {
+            int ele=nums[j];
+            if(ele==1)
+                one++;
+            else
+                zero++;
+            
+            int diff=zero-one;
+            int oldindex=map[diff];//PS[i-1]
+            ans=max(ans,j-oldindex);
+            map[diff]=min(oldindex,j);
+        }
+        return ans;
+    }
+};
