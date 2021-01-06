@@ -20,6 +20,7 @@ int find(vector<int> & arr, int k)
         //keep the oldest(leftmost) value in the hashmap, so insert new csum values and dont update the already stored value
         if(mp.find(csum)==mp.end())
             mp[csum]=i;
+        
     }
     
     return ans;

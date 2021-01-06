@@ -1,5 +1,4 @@
 //no of subarray sum equals K
-
 //hashmap approach :: sum(i,j)= PS[j]-PS[i-1]=target
 //PS[j]-target=PS[i-1]   (key mathematics)
 class Solution {
@@ -111,7 +110,7 @@ long long int countSubarrWithEqualZeroAndOne(int arr[], int len)
 {
     long long int ans=0;
     unordered_map<long long int,long long int> mp;
-    mp[0]++;//important point
+    mp[0]++;             //important point
     long long int one=0;
     long long int zero=0;
     

@@ -113,16 +113,182 @@ void jobsequence()
 //k similiar strings
 //O(s1.length()* s1.length())
 //lc 854
+void lc854()
+{
+    class Solution
+    {
+    public:
+        int kSimilarity(string A, string B)
+        {
+            int len = A.length();
+            int level = 0;
+            queue<pair<string, int>> q;
+            unordered_set<string> map;
+            map.insert(A);
+            q.push({A, -1}); //the number is to store the index till which A and B are equal as of now
+            while (q.size() != 0)
+            {
+                int sz = q.size();
+                while (sz-- > 0)
+                {
+                    pair<string, int> p = q.front();
+                    q.pop();
+
+                    string rvtx = p.first;
+                    int pos = p.second;
+
+                    if (rvtx == B)
+                    {
+                        return level;
+                    }
+
+                    int i = pos + 1, j = pos + 1;
+                    while (j != len)
+                    {
+                        if (rvtx[i] != B[j])
+                        {
+                            for (int k = i + 1; k < len; k++)
+                            {
+                                if (rvtx[k] == B[j])
+                                {
+                                    string Acopy = rvtx;
+                                    char ch = Acopy[k];
+                                    Acopy[k] = Acopy[i];
+                                    Acopy[i] = ch;
+
+                                    if (map.find(Acopy) == map.end())
+                                        q.push({Acopy, i});
+
+                                    map.insert(Acopy);
+                                }
+                            }
+                            break;
+                        }
+                        else
+                        {
+                            i++;
+                            j++;
+                        }
+                    }
+                }
+                level++;
+            }
+            return level;
+        }
+    };
+}
 
 //lc 1203
 //sort items by dependencies
-
-void lc854()
-{
-}
-
 void lc1203()
 {
+    class Solution
+    {
+    public:
+        vector<int> sortItems(int n, int m, vector<int> &group, vector<vector<int>> &before)
+        {
+
+            vector<vector<int>> gp(n + (2 * m), vector<int>());
+
+            //construct edges for the groups, use hashing logic for grouping
+            for (int i = 0; i < group.size(); i++)
+            {
+                if (group[i] != -1)
+                {
+                    int entry = n + (2 * group[i]);
+                    int exit = n + (2 * group[i]) + 1;
+
+                    //create edges from entry to ith node , from ith node to exit
+                    gp[entry].push_back(i);
+                    gp[i].push_back(exit);
+                }
+            }
+
+            //construct edges according to before rules
+            for (int i = 0; i < before.size(); i++)
+            {
+                for (int j = 0; j < before[i].size(); j++)
+                {
+                    int from = before[i][j];
+                    int to = i;
+
+                    if (group[from] == -1 && group[to] == -1) //nodes in the same group or individual groups
+                    {
+                        gp[from].push_back(to);
+                    }
+                    else if (group[from] == -1) //from node individual ha, to node grp mein hai use its entry point
+                    {
+                        gp[from].push_back((n + (2 * group[to])));
+                    }
+
+                    else if (group[to] == -1) //from node grp mein hai so use the exit point for that, to individual ha
+                    {
+                        gp[(n + (2 * group[from]) + 1)].push_back(to);
+                    }
+
+                    else //both from and to belong to different groups
+                    {
+                        if (group[from] != group[to])
+                            gp[n + (2 * group[from]) + 1].push_back(n + (2 * group[to]));
+                        else
+                            gp[from].push_back(to);
+                    }
+                }
+            }
+
+            vector<int> indegree(n + (2 * m), 0);
+            //apply topological sorting
+
+            //create indegree vector
+            for (int i = 0; i < gp.size(); i++)
+            {
+                for (int j = 0; j < gp[i].size(); j++)
+                {
+                    indegree[gp[i][j]]++;
+                }
+            }
+
+            //push nodes with indegree zero
+            vector<int> ans;
+            stack<int> st;
+            for (int i = 0; i < indegree.size(); i++)
+            {
+                if (indegree[i] == 0)
+                {
+                    st.push(i);
+                }
+            }
+
+            //apply kahn algo
+            while (st.size() != 0)
+            {
+                int sz = st.size();
+                while (sz-- > 0)
+                {
+                    int rvtx = st.top();
+                    st.pop();
+
+                    if (rvtx < n)
+                        ans.push_back(rvtx);
+
+                    for (int i = 0; i < gp[rvtx].size(); i++)
+                    {
+                        int node = gp[rvtx][i];
+                        indegree[node]--;
+                        if (indegree[node] == 0)
+                        {
+                            st.push(node);
+                        }
+                    }
+                }
+            }
+
+            if (ans.size() != n)
+                return {};
+            else
+                return ans;
+        }
+    };
 }
 
 void solve()
