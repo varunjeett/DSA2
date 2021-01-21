@@ -153,3 +153,55 @@ public:
         return ans;
     }
 };
+
+
+// 713. Subarray Product Less Than K
+// Your are given an array of positive integers nums.
+// Count and print the number of (contiguous) subarrays where the product of all the elements in the subarray is less than k.
+int numSubarrayProductLessThanK(vector<int>& nums, int k) {
+    if(k<=1)
+        return 0;
+    long long int window=1;
+    int left=0;
+    int right=0;
+    int ans=0;
+    while(right < nums.size())
+    {
+        window*=nums[right];//acquire
+        
+        //release
+        while(window >=k){//handle k=0,1 seperately as left will go out of bound
+            window/=nums[left];
+            left++;
+        }
+        
+        
+        //since if a window from left to right has product less than k, then all inside subarrays will have lesser product, so all possible subarray ending at right will be right-left+1
+        ans+=right-left+1;//single element greater than k case is handled, as left=right+1, ans+=right-right-1+1 =0,no increment in answer, then right++ will take the loop forward.
+        right++;
+    }
+    
+    return ans;
+}
+
+//longest consecutive increasing subsequence
+class Solution{
+public:
+    int sortingCost(int N, int arr[]){
+        // code here
+        int mx=0;
+        unordered_map<int,int> mp;
+        for(int i=0;i<N;i++){
+            int ele=arr[i];
+            if(mp.find(ele-1)!=mp.end()){
+                mp[ele]=mp[ele-1]+1;
+            }
+            else
+                mp[ele]=1;
+                
+            mx=max(mx,mp[ele]);
+        }
+        
+        return N-mx;  
+    }
+};
